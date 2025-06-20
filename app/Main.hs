@@ -1,7 +1,7 @@
 module Main (main) where
 
 import Options.Applicative
-import Writer
+import File
 
 main :: IO ()
 main = execParser opts >>= runCommand

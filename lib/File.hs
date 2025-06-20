@@ -1,4 +1,4 @@
-module Writer (updateCRC32, calculateCRC32Content, checkCRC32, calculateCRC32) where
+module File (updateCRC32, calculateCRC32Content, checkCRC32, calculateCRC32) where
 
 import Data.Binary.Put (putWord32be, runPut)
 import qualified Data.ByteString.Lazy as BSL
@@ -31,6 +31,7 @@ calculateCRC32 filePath = do
             let crc = crc32Lazy mainPart
             putStrLn $ "CRC32 checksum: " ++ show crc
 
+-- | Updates the CRC32 checksum of a file by recalculating it and appending it to the end.
 updateCRC32 :: FilePath -> IO ()
 updateCRC32 filePath = do
     fileBS <- BSL.readFile filePath

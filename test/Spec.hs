@@ -10,7 +10,7 @@ import System.Environment (withArgs)
 import System.IO (IOMode (ReadMode), hClose, hGetContents, withBinaryFile)
 import System.IO.Temp (withSystemTempFile)
 import Test.Hspec
-import Writer (calculateCRC32Content, updateCRC32)
+import File (calculateCRC32Content, updateCRC32)
 
 main :: IO ()
 main = hspec $ do

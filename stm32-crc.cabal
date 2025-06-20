@@ -67,14 +67,14 @@ executable stm32-crc
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
-    build-depends:    base ^>=4.17.2.1, array, binary, bytestring, optparse-applicative
+    build-depends:    base, array, binary, bytestring, optparse-applicative
 
     -- Directories containing source files.
     hs-source-dirs:   app, lib
 
     -- Base language which the package is written in.
     default-language: Haskell2010
-    other-modules: STM32CRC, Writer
+    other-modules: STM32CRC, File
 
 test-suite stm32-crc-test
     type:               exitcode-stdio-1.0
@@ -82,10 +82,10 @@ test-suite stm32-crc-test
     -- Main test suite file.
     main-is:            Spec.hs
 
-    other-modules: STM32CRC, Writer
+    other-modules: STM32CRC, File
 
     -- Other library packages from which modules are imported.
-    build-depends:      base ^>=4.17.2.1, array, binary, bytestring, hspec, temporary, optparse-applicative
+    build-depends:      base, array, binary, bytestring, hspec, temporary, optparse-applicative
 
     -- Directories containing source files.
     hs-source-dirs:     test, lib
