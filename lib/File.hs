@@ -1,4 +1,4 @@
-module File (updateCRC32, calculateCRC32Content, checkCRC32, calculateCRC32) where
+module File (updateCRC32, calculateCRC32Content, checkCRC32, calculateCRC32, updateCRC32Content, checkCRC32Content) where
 
 import Data.Binary.Put (putWord32be, runPut)
 import qualified Data.ByteString.Lazy as BSL
@@ -49,3 +49,22 @@ calculateCRC32Content fileBS =
                     crc = crc32Lazy mainPart
                     crcBytes = runPut $ putWord32be crc
                  in mainPart `BSL.append` crcBytes
+
+-- | Updates the CRC32 checksum for ByteString content.
+updateCRC32Content :: BSL.ByteString -> IO ()
+updateCRC32Content content = do
+    let newContent = calculateCRC32Content content
+    BSL.putStr newContent
+
+-- | Checks if the CRC32 checksum appended to ByteString content is valid.
+checkCRC32Content :: BSL.ByteString -> IO ()
+checkCRC32Content content = do
+    let len = BSL.length content
+    if len < 4
+        then error "Content must be at least 4 bytes long"
+        else do
+            let (mainPart, crcPart) = BSL.splitAt (len - 4) content
+            let expectedCRC = runPut $ putWord32be $ crc32Lazy mainPart
+            if crcPart == expectedCRC
+                then putStrLn "Checksum is valid."
+                else putStrLn "Checksum is invalid."

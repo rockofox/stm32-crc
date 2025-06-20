@@ -2,6 +2,7 @@ module Main (main) where
 
 import Options.Applicative
 import File
+import qualified Data.ByteString.Lazy.Char8 as BSL
 
 main :: IO ()
 main = execParser opts >>= runCommand
@@ -21,7 +22,10 @@ commands = subparser
    <> command "calculate" (info (Calculate <$> argument str (metavar "FILE")) (progDesc "Calculate CRC checksum and output to stdout")) )
 
 runCommand :: Command -> IO ()
-runCommand (Update filePath) = updateCRC32 filePath
-runCommand (Check filePath) = checkCRC32 filePath
-runCommand (Calculate filePath) = calculateCRC32 filePath
+runCommand (Update filePath) =
+    if filePath == "-" then getContents >>= updateCRC32Content . BSL.pack else updateCRC32 filePath
+runCommand (Check filePath) =
+    if filePath == "-" then getContents >>= checkCRC32Content . BSL.pack else checkCRC32 filePath
+runCommand (Calculate filePath) =
+    if filePath == "-" then getContents >>= \content -> BSL.putStr $ calculateCRC32Content $ BSL.pack content else calculateCRC32 filePath
 
