@@ -1,9 +1,10 @@
-module File (updateCRC32, calculateCRC32Content, checkCRC32, calculateCRC32, updateCRC32Content, checkCRC32Content) where
+module File (updateCRC32, calculateCRC32Content, checkCRC32, calculateCRC32, updateCRC32Content, checkCRC32Content, extractChecksum) where
 
 import Data.Binary.Put (putWord32be, runPut)
 import qualified Data.ByteString.Lazy as BSL
 import STM32CRC
 import System.IO (IOMode (WriteMode), withBinaryFile)
+import Data.Word (Word32)
 
 -- | Checks if the CRC32 checksum appended to the file is valid.
 checkCRC32 :: FilePath -> IO ()
@@ -68,3 +69,13 @@ checkCRC32Content content = do
             if crcPart == expectedCRC
                 then putStrLn "Checksum is valid."
                 else putStrLn "Checksum is invalid."
+-- | Extracts the CRC32 checksum from the content.
+extractChecksum :: BSL.ByteString -> Word32
+extractChecksum fileBS =
+    let len = BSL.length fileBS
+     in if len < 4
+            then error "File must be at least 4 bytes long"
+            else
+                let (_, crcPart) = BSL.splitAt (len - 4) fileBS
+                 in crc32Lazy crcPart
+

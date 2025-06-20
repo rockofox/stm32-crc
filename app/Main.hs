@@ -2,6 +2,7 @@ module Main (main) where
 
 import Options.Applicative
 import File
+import Numeric (showHex)
 import qualified Data.ByteString.Lazy.Char8 as BSL
 
 main :: IO ()
@@ -27,5 +28,5 @@ runCommand (Update filePath) =
 runCommand (Check filePath) =
     if filePath == "-" then getContents >>= checkCRC32Content . BSL.pack else checkCRC32 filePath
 runCommand (Calculate filePath) =
-    if filePath == "-" then getContents >>= \content -> BSL.putStr $ calculateCRC32Content $ BSL.pack content else calculateCRC32 filePath
+    if filePath == "-" then getContents >>= \content -> putStrLn $ Numeric.showHex (extractChecksum $ BSL.pack content) "" else calculateCRC32 filePath
 
